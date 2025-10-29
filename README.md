@@ -1,6 +1,9 @@
 ### Analysis scripts to accompany the paper "Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein"
 
-`nanotube_TEM_analysis.ipynb` is a Jupyter notebook that automates the analysis of nanotube TEM images, extracting nanotube diameters and chiral angles.
+`Nanotube_TEM_analysis/` contains:
+  - `nanotube_TEM_analysis.ipynb`: Jupyter notebook that automates the analysis of nanotube TEM images.
+  - `results.csv`: Extracted nanotube diameters and chiral angles.
+  - `plot_results.ipynb`: Plot the data in `results.csv`.
 
 `SAXS_MCMC/` contains:
   - `run_SAXS_MCMC.ipynb` is a Jupyter notebook that implements MCMC on processed small-angle x-ray scattering data and generates backend files for each experiment.
@@ -8,7 +11,7 @@
   - `saxs_models.py` contains functions for plotting and defining the SAXS models used for fitting the data.
   - `5djb_FoXS.dat` contains the simulated scattering curve of a BMC-H subunit (PDB ID: 5DJB), computed using FoXS and interpolated to match the data.
 
-`cgMD_curvature_analysis/` contains:
-  - `cgMD_trajectory_analysis.ipynb` is a Jupyter notebook that reads cgMD trajectory data of BMC-H hexamer lattice sheets and computes the local curvature of the sheets over time.
+`cgMD_trajectory_analysis/` contains:
+  - `sheet_curvature_analysis.ipynb` is a Jupyter notebook that reads cgMD trajectory data of BMC-H hexamer lattice sheets and computes the local curvature of the sheets over time.
 
 The associated data will be stored elsewhere for review.
