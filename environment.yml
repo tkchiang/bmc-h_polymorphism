@@ -8,16 +8,23 @@
 #   conda env update --name bmc-h_polymorphism --file environment.yml --prune
 #
 name: bmc-h_polymorphism
+
 channels:
   - conda-forge
-dependencies:
-  - numpy-2.0.2
-  - matplotlib-3.10.0
-  - seaborn-0.13.2
-  - emcee-3.1.6
-  - mdtraj-1.11.0
-  - pymbar-4.0.3
-  - gemmi-0.7.3
 
-  # include jupyterlab for convenience
-  - jupyterlab
+dependencies:
+  - numpy: 2.3.2
+  - scipy: 1.16.1
+  - tifffile: 2024.12.12
+  - matplotlib: 3.10.6
+  - seaborn: 0.13.2
+  - pandas: 2.3.1
+  - tqdm: 4.67.1
+  
+  - emcee: 3.1.6
+  - multiprocess: 0.70.18
+  - corner: 2.2.3
+  
+  - mdtraj: 1.11.0
+  - pymbar: 4.0.3
+  - gemmi: 0.7.3
