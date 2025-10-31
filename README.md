@@ -3,7 +3,7 @@
 This repository contains analysis scripts and processed results accompanying the paper 
 "Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein". 
 
-The repository is organized into these main analyses: 
+The repository is organized into the following analyses: 
 
 - TEM image analysis of nanotubes
 - MCMC fitting of SAXS data
