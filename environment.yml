@@ -1,10 +1,8 @@
 # dependencies
 #
 # To use:
-```bash
-conda env create -f environment.yml
-conda activate bmc-h_polymorphism
-```
+#  conda env create -f environment.yml
+#  conda activate bmc-h_polymorphism
 #
 # To update dependencies after changing this environment file:
 #   conda env update --name bmc-h_polymorphism --file environment.yml --prune
