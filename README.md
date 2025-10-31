@@ -47,7 +47,7 @@ Notebooks are designed to run sequentially in each analysis folder. Processed da
 Raw experimental and simulation data (TEM images, SAXS data, and MD trajectories) are stored externally and will be provided to reviewers upon request.
 
 Included processed files:
-- `Nanotube_TEM_analysis/results.csv`: extracted nanotube diameters and chiral angles.
+- `Nanotube_TEM_analysis/tube_results.csv`: extracted nanotube diameters and chiral angles.
 - `SAXS_MCMC/5djb_FoXS.dat`: simulated scattering curves.
 
 For full analysis, see the corresponding notebooks in each folder.
