@@ -11,9 +11,13 @@ name: bmc-h_polymorphism
 channels:
   - conda-forge
 dependencies:
-  - numpy=1.23.3
-  - matplotlib=3.4.3
-  - seaborn=0.12.0
+  - numpy-2.0.2
+  - matplotlib-3.10.0
+  - seaborn-0.13.2
+  - emcee-3.1.6
+  - mdtraj-1.11.0
+  - pymbar-4.0.3
+  - gemmi-0.7.3
 
   # include jupyterlab for convenience
   - jupyterlab
