@@ -12,7 +12,6 @@ The repository is organized into the following analyses:
 
 - TEM image analysis of nanotubes
 - MCMC fitting of SAXS data
-- BMC-H subunit conformational flexibility analysis of all-atom MD trajectories
 - Coarse-grained MD trajectory analysis of hexamer sheets
 
 ---
