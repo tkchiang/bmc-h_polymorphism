@@ -1,0 +1,13 @@
+numpy>=2.0
+scipy>=1.16
+tifffile>=2024.12
+matplotlib>=3.10
+seaborn>=0.13
+pandas>=2.2
+tqdm>=4.67
+emcee>=3.1
+multiprocess>=0.70
+corner>=2.2
+mdtraj>=1.11
+pymbar>=4.0
+gemmi>=0.7
