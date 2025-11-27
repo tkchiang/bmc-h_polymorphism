@@ -3,7 +3,7 @@ This repository contains analysis scripts and processed results accompanying the
 ### Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein
 *Timothy K. Chiang, Alexander Jussupow, Antonino Caliò, Megan C. Gruenberg Cross, Wilson Tao, Kyleigh L. Range, Arinita Pramanik, Aimee Chi Soe, Kristin N. Parent, Greg L. Hura, Paul D. Ashby, Michael Feig, Markus Sutter, Cheryl A. Kerfeld*
 
-Release: [![DOI](https://zenodo.org/badge/1099936255.svg)](https://doi.org/xx.xxxx/zenodo.xxxxxxxx) 
+Release: [![DOI](https://zenodo.org/badge/xxxxxxxxxx.svg)](https://doi.org/xx.xxxx/zenodo.xxxxxxxx) 
 
 
 The repository is organized into the following analyses: 
