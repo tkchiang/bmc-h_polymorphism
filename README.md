@@ -31,14 +31,8 @@ The repository is organized into the following analyses:
 
 ### Reproducibility
 
-To run the notebooks, first create and activate a Conda environment:
 
-```bash
-conda env create -f environment.yml
-conda activate polymorph_env
-```
-
-Notebooks are designed to run sequentially in each analysis folder. Processed data files included in the repository allow reproduction of the figures in the paper.
+Notebooks are designed to run sequentially in each analysis folder. The packages listed in `requirements.txt' are required to run the notebooks. Processed data files included in the repository allow reproduction of the figures in the paper.
 
 ---
 
