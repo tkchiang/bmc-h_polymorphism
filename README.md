@@ -32,7 +32,7 @@ The repository is organized into the following analyses:
 ### Reproducibility
 
 
-Notebooks are designed to run sequentially in each analysis folder. The packages listed in `requirements.txt' are required to run the notebooks. Processed data files included in the repository allow reproduction of the figures in the paper.
+Notebooks are designed to run sequentially in each analysis folder. The packages listed in `requirements.txt` are required to run the notebooks. Processed data files included in the repository allow reproduction of the figures in the paper.
 
 ---
 
