@@ -4,7 +4,6 @@ This repository contains analysis scripts and processed results accompanying the
 *Timothy K. Chiang, Alexander Jussupow, Antonino Caliò, Megan C. Gruenberg Cross, Wilson Tao, Kyleigh L. Range, Arinita Pramanik, Aimee Chi Soe, Kristin N. Parent, Greg L. Hura, Paul D. Ashby, Michael Feig, Markus Sutter, Cheryl A. Kerfeld*
 
 
-
 The repository is organized into the following analyses: 
 
 - TEM image analysis of nanotubes
@@ -12,8 +11,6 @@ The repository is organized into the following analyses:
 - Coarse-grained MD trajectory analysis of hexamer sheets
 
 ---
-
-### Repository structure
 
 | Folder | Notebooks / Scripts | Description / Output |
 |-|-|-|
@@ -28,30 +25,14 @@ The repository is organized into the following analyses:
 
 ---
 
-### Reproducibility
-
-
 Notebooks are designed to run sequentially in each analysis folder. The packages listed in `requirements.txt` are required to run the notebooks. Processed data files included in the repository allow reproduction of the figures in the paper.
 
 ---
 
-### Data
-
-Raw experimental and simulation data (TEM images, SAXS data, and MD trajectories) are stored externally and will be provided to reviewers upon request.
+Raw experimental and simulation data (TEM images, SAXS data, and MD trajectories) are stored externally and will be provided to reviewers.
 
 Included/processed files:
 - `Nanotube_TEM_analysis/tube_results.csv`: extracted nanotube diameters and chiral angles.
 - `SAXS_MCMC/5djb_FoXS.dat`: simulated scattering curve of a BMC-H subunit (PDB ID: 5DJB), interpolated to match experimental data.
 
 For full analysis, see the corresponding notebooks in each folder.
-
----
-
-### Citation
-
-If these scripts are to be used for reproducing or extending the analysis, please cite the paper:
-
-"Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein".
-
-
-"Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein".
