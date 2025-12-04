@@ -32,5 +32,3 @@ Raw experimental and simulation data (TEM images, SAXS data, and MD trajectories
 Included/processed files:
 - `Nanotube_TEM_analysis/tube_results.csv`: extracted nanotube diameters and chiral angles.
 - `SAXS_MCMC/5djb_FoXS.dat`: simulated scattering curve of a BMC-H subunit (PDB ID: 5DJB), interpolated to match experimental data.
-
-For full analysis, see the corresponding notebooks in each folder.
