@@ -5,8 +5,8 @@
 The repository is organized into the following analyses: 
 
 - TEM image analysis of nanotubes
-- MCMC fitting of SAXS data
-- Coarse-grained MD trajectory analysis of hexamer sheets
+- MCMC analysis of SAXS data
+- Analysis of coarse-grained hexamer sheet MD trajectories
 
 ---
 
