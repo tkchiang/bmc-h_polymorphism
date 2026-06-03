@@ -1,4 +1,4 @@
-### Polymorphic _in vitro_ assembly of a bacterial microcompartment shell protein
+### Polymorphic In Vitro Assembly of a Bacterial Microcompartment Shell Protein
 *Timothy K. Chiang, Alexander Jussupow, Antonino Caliò, Megan C. Gruenberg Cross, Wilson Tao, Kyleigh L. Range, Arinita Pramanik, Aimee Chi Soe, Kristin N. Parent, Greg L. Hura, Paul D. Ashby, Michael Feig, Markus Sutter, Cheryl A. Kerfeld*
 
 
