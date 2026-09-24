@@ -1,9 +1,12 @@
+import os
 import numpy as np
 from numpy import pi, sqrt
 from scipy.special import j1  # Bessel function J1
 from scipy.special import spherical_jn
 
 import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import emcee
 
 
 
@@ -22,6 +25,9 @@ q, Iq_h, err_Iq_h = loadDatFile(FoXS_BMCH)
 
 
 
+###############################################
+# ANALYTICAL SCATTERING FUNCTION DEFINITIONS
+###############################################
 def hollow_cylinder_polydisperse(q, radius, sigma_radius, length,
                                  thickness, delta_rho,
                                  n_poly=50, n_int=50):
@@ -319,6 +325,9 @@ def combined_model(q,
 
 
 
+###############################################
+# EXTRACT MAP ESTIMATES
+###############################################
 def getSamplesLogProbThetaMap(sampler, burnin=1, thin=1):
     samples = sampler.get_chain(discard=burnin, thin=thin, flat=True)
     log_prob = sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
@@ -328,6 +337,10 @@ def getSamplesLogProbThetaMap(sampler, burnin=1, thin=1):
 
 
 
+
+###############################################
+# SHOW WALKER TRACES
+###############################################
 def show_walker_traces(reader, burnin=1, thin=1, labs=[]):
 
     chain_full = reader.get_chain() # (n_steps, n_walkers, ndim)
@@ -340,47 +353,50 @@ def show_walker_traces(reader, burnin=1, thin=1, labs=[]):
         ax0 = axes[i, 0]
         ax0.plot(chain_full[:, :, i], alpha=0.1)
         ax0.set_ylabel(f"{labs[i]}")
+        ax0.set_facecolor("0.96")
+        ax0.set_axisbelow(True)
+        ax0.grid(True, color="white", linewidth=0.8, zorder=0)
+        ax0.tick_params(axis="both", length=0, labelsize=7)
+        for spine in ax0.spines.values():
+            spine.set_visible(False)
         if i == 0:
             ax0.set_title("Before burn-in removal")
     
         # After burn-in
         ax1 = axes[i, 1]
         ax1.plot(samples[:,:,i], alpha=0.1)
+        ax1.set_facecolor("0.96")
+        ax1.set_axisbelow(True)
+        ax1.grid(True, color="white", linewidth=0.8, zorder=0)
+        ax1.tick_params(axis="both", length=0, labelsize=7)
+        for spine in ax1.spines.values():
+            spine.set_visible(False)
         if i == 0:
             ax1.set_title("After burn-in removal")
     
-    axes[-1, 0].set_xlabel("Step")
-    axes[-1, 1].set_xlabel("Step")
+    axes[-1, 0].set_facecolor("0.96")
+    axes[-1, 0].set_axisbelow(True)
+    axes[-1, 0].grid(True, color="white", linewidth=0.8, zorder=0)
+    axes[-1, 0].tick_params(axis="both", length=0, labelsize=7)
+    for spine in axes[-1, 0].spines.values():
+        spine.set_visible(False)
+
+    axes[-1, 0].set_xlabel("Step Number")
+    axes[-1, 1].set_xlabel("Step Number")
+
+
     plt.tight_layout()
     plt.show()
     
     return None
 
 
-def compute_MAP_and_Interval(samples, log_probs, ndraws=100):
-    # Get MAP estimate
-    theta_map = samples[np.argmax(log_probs)]
-    
-    # Evaluate fit function at MAP
-    Iq_fit_MAP = combined_model(q, *theta_map)
-
-    # Randomly sample from posterior
-    subset_indices = np.random.choice(len(samples), size=ndraws, replace=False)
-    Iq_fits = np.array([combined_model(q, *samples[i]) for i in subset_indices])
-
-    # Compute confidence intervals
-    intervals = {}
-    for nSigma in [1, 2, 3]:
-        lower_percentile = 100 * norm.cdf(-nSigma)
-        upper_percentile = 100 * norm.cdf(nSigma)
-        lower = np.percentile(Iq_fits, lower_percentile, axis=0)
-        upper = np.percentile(Iq_fits, upper_percentile, axis=0)
-        intervals[f"{nSigma}sigma"] = (lower, upper)
-
-    return Iq_fit_MAP, intervals
 
 
 
+###############################################
+# SHOW DATA & SCATTERING CONTRIBUTIONS
+###############################################
 def showIndividualCurves(q, Iq, err_Iq, params, labels):
     """
     Plot individual scattering contributions (cylinder, lamella, vesicle, subunit)
@@ -444,3 +460,217 @@ def showIndividualCurves(q, Iq, err_Iq, params, labels):
 
     plt.grid()
     plt.show()
+
+
+
+
+
+
+###############################################
+# SHOW COMPREHENSIVE ANALYSIS RESULTS
+###############################################
+def show_mcmc_analysis(
+    data_filename,
+    backend_filename,
+    labels,
+    burnin=1,
+    thin=1,
+    bins=20,
+    figsize=(12, 8),
+    # Corner label styling parameters
+    label_fontsize=9,
+    label_pad=2,
+    label_rotation_x=0,
+    label_rotation_y=0
+):
+
+    '''
+    This function shows a comprehensive summary plot of the MCMC analysis.
+    Plots of walker traces enables inspection of convergence of the walkers post-burnin.
+    Corner plots show joint distributions, enabling inspection of parameter correlations and marginal distributions.
+    Finally, the data, inferred fit, and residuals are shown to assess fit quality.
+    '''
+
+    # Load experiment data
+    data = np.loadtxt(data_filename)
+    q, Iq, err_Iq = data[:, 0], data[:, 1], data[:, 2]
+
+    # Load sample chains from backend file
+    reader = emcee.backends.HDFBackend(backend_filename)
+    chain_full = reader.get_chain()
+    flat_samples = reader.get_chain(discard=burnin, thin=thin, flat=True)
+    ndim = flat_samples.shape[1]
+
+    # Compute log_probs and parameters MAP estimates
+    log_prob = reader.get_log_prob(discard=burnin, thin=thin, flat=True)
+    map_params = flat_samples[np.argmax(log_prob)]
+
+    # Compute MAP fit curve
+    I_combined = combined_model(q, *map_params)
+
+    # Compute scattering contributions
+    cyl_idx=(0, 1, 2, 9, 10)
+    cyl_params = map_params[list(cyl_idx)]
+    lam_idx=(3, 4, 5, 6, 9, 10)
+    lam_params = map_params[list(lam_idx)]
+    ves_idx=(7, 8, 9, 10)
+    ves_params = map_params[list(ves_idx)]
+    scales_idx=(11, 12, 13, 14)
+    scales = map_params[list(scales_idx)]
+    bg = map_params[15]
+
+    I_cyl = scales[0] * hollow_cylinder_polydisperse(q, *cyl_params) + bg
+    I_lam = scales[1] * lamellar_stack_polydisperse(q, *lam_params) + bg
+    I_ves = scales[2] * vesicle_polydisperse(q, *ves_params) + bg
+    I_h   = scales[3] * Iq_h + bg
+
+
+
+
+
+    # Define figure layout
+    fig = plt.figure(figsize=figsize)
+    outer_gs = gridspec.GridSpec(1, 2, width_ratios=[1, 3], wspace=0.1, figure=fig)
+    right_spec = outer_gs[1]
+
+
+
+
+    #### PANEL A: Walker Traces (Left Column)
+    samples_chain = chain_full[burnin::thin, :, :]
+    trace_gs = gridspec.GridSpecFromSubplotSpec(ndim, 1, subplot_spec=outer_gs[0], hspace=0.1)
+
+    trace_axes = []
+    for i in range(ndim):
+        ax = fig.add_subplot(trace_gs[i], sharex=trace_axes[0] if i > 0 else None)
+        trace_axes.append(ax)
+
+        ax.plot(samples_chain[:, :, i], color="black", alpha=0.1, lw=0.5)
+        ax.set_ylabel(labels[i], fontsize=8)
+
+        ax.set_facecolor("0.96")
+        ax.set_axisbelow(True)
+        ax.grid(True, color="white", linewidth=0.8, zorder=0)
+        for spine in ax.spines.values():
+            spine.set_visible(False)
+
+        ax.tick_params(axis="both", length=0, labelsize=7, labelbottom=(i == ndim - 1))
+
+        if i == 0:
+            ax.set_title(f"Walker Traces ({data_filename.split('/')[-1]})", fontsize=10, pad=8)
+
+    trace_axes[-1].set_xlabel("Step Number", fontsize=9)
+
+
+
+
+
+    #### PANEL B & C: Right Grid setup for Corner Plot & Fit Panel
+    right_gs = gridspec.GridSpecFromSubplotSpec(ndim, ndim, subplot_spec=right_spec, hspace=0.1, wspace=0.1)
+
+    lims = []
+    for i in range(ndim):
+        lo, hi = np.min(flat_samples[:, i]), np.max(flat_samples[:, i])
+        pad = 0.05 * (hi - lo)
+        lims.append((lo - pad, hi + pad))
+
+    fit_cols_start = 9
+    fit_rows_end = 6
+
+
+
+    # Populate Corner Grid
+    for i in range(ndim):
+        for j in range(ndim):
+            if i < fit_rows_end and j >= fit_cols_start:
+                continue
+
+            if j > i:
+                continue
+
+            ax = fig.add_subplot(right_gs[i, j])
+            ax.set_facecolor("0.96")
+            ax.set_axisbelow(True)
+            ax.grid(True, color="white", linewidth=0.8, zorder=0)
+            for spine in ax.spines.values():
+                spine.set_visible(False)
+
+            ax.tick_params(axis="both", length=0, labelsize=0)
+            ax.set_xticklabels([])
+            ax.set_yticklabels([])
+
+            if i == j:
+                data_col = flat_samples[:, i]
+                counts, edges = np.histogram(
+                    data_col, bins=bins, range=lims[i]
+                )
+                ax.bar(edges[:-1],counts,width=np.diff(edges),align="edge",
+                    color="steelblue",edgecolor="w",lw=0.1,zorder=2)
+                ax.set_xlim(lims[i])
+                ax.set_yticks([])
+            else:
+                x, y = flat_samples[:, j], flat_samples[:, i]
+                ax.scatter(
+                    x,y,s=2,alpha=0.01,color="steelblue",edgecolor="none",
+                    rasterized=True,zorder=2)
+                ax.set_xlim(lims[j])
+                ax.set_ylim(lims[i])
+
+            # Parameter name labels
+            if i == ndim - 1:
+                ax.set_xlabel(labels[j],fontsize=label_fontsize,
+                    labelpad=label_pad,rotation=label_rotation_x,
+                    ha="right" if label_rotation_x != 0 else "center",
+                )
+
+            if j == 0 and i != 0:
+                ax.set_ylabel(labels[i],fontsize=label_fontsize,labelpad=label_pad,rotation=label_rotation_y,va="center")
+
+
+
+    #### PANEL C: Data, Fit, and Residual Plots
+    fit_gs = gridspec.GridSpecFromSubplotSpec(2,1,subplot_spec=right_gs[0:fit_rows_end, fit_cols_start:ndim],height_ratios=[4, 1],hspace=0.1)
+    ax_fit = fig.add_subplot(fit_gs[0])
+    ax_res = fig.add_subplot(fit_gs[1], sharex=ax_fit)
+
+    # Plot data
+    ax_fit.errorbar(q, Iq, yerr=err_Iq, fmt=".", color="steelblue", alpha=0.3, ms=2, label="Data", zorder=5)
+
+    # Plot I_combined
+    ax_fit.plot(q, I_combined, "r-", lw=1, label="Fit", zorder=6, alpha=0.8)
+
+    # Plot morphology contributions
+    ax_fit.plot(q, I_cyl, lw=0.5, label='Cyl',   zorder=4, alpha=0.8)
+    ax_fit.plot(q, I_lam, lw=0.5, label='Lam',   zorder=3, alpha=0.8)
+    ax_fit.plot(q, I_ves, lw=0.5, label='Ves',   zorder=2, alpha=0.8)
+    ax_fit.plot(q, I_h,   lw=0.5, label='BMC-H', zorder=1, alpha=0.8)
+
+    ax_fit.set_xscale("log")
+    ax_fit.set_yscale("log")
+    ax_fit.set_ylabel("I(q)", fontsize=8)
+    ax_fit.legend(fontsize=6, loc="upper right", frameon=False)
+    ax_fit.set_title("Data and MAP fit", fontsize=9, pad=4)
+    ax_fit.set_ylim(bg/10, np.max(Iq)*2)
+    ax_fit.set_facecolor("0.96")
+    ax_fit.set_axisbelow(True)
+    ax_fit.grid(True, color="white", linewidth=0.8, zorder=0)
+    ax_fit.tick_params(axis="both", color='white', labelsize=7, labelbottom=False)
+    for spine in ax_fit.spines.values():
+        spine.set_visible(False)
+
+    # Plot residuals
+    residuals = (Iq - I_combined) / err_Iq # Standardized residuals
+    ax_res.plot(q, residuals, ".", color="steelblue", ms=2, alpha=0.7)
+    ax_res.axhline(0, color="k", ls="--", lw=0.8, zorder=0)
+    ax_res.set_xscale("log")
+    ax_res.set_xlabel("$q\ (Å^{-1})$", fontsize=8)
+    ax_res.set_ylabel("Residuals", fontsize=7)
+    ax_res.set_facecolor("0.96")
+    ax_res.set_axisbelow(True)
+    ax_res.grid(True, color="white", linewidth=0.8, zorder=0)
+    ax_res.tick_params(axis="both", length=0, labelsize=7)
+    for spine in ax_res.spines.values():
+        spine.set_visible(False)
+
+    plt.show()
+    return fig
